@@ -57,6 +57,7 @@ pip install --user cudam
 * Create a soft link of the executable file
 ```bash
 ln -s /home/{YOURUSER}/.local/bin/cudam_task_manager.py cudam_task_manager.py
+ln -s /home/{YOURUSER}/.local/bin/cudam_snap_gpu.py cudam_snap_gpu.py
 ```
 
 * Run the task manager

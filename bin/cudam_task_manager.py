@@ -77,7 +77,7 @@ def snap_gpu_by_process(gpu_id, lock_time, server):
     :type server: int
     :return:
     """
-    str_command = 'cudam_snap_gpu -s {} -l {} -g {}'.format(server, lock_time, gpu_id)
+    str_command = 'python cudam_snap_gpu.py -s {} -l {} -g {}'.format(server, lock_time, gpu_id)
     arr_command = str_command.split(' ')
     output = subprocess.call(arr_command)
     return output

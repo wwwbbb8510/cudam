@@ -37,7 +37,7 @@ def search_used_gpus(debug=False):
         str_output = nv_output.decode('utf-8')
     arr_output = str_output.split('\n')
     for str_row in arr_output:
-        match_obj = re.match(r'\|\s+(\d)\s+\d+\s+\w+\s+[\w\d.]+\s+\d+MiB\s+\|', str_row)
+        match_obj = re.match(r'\|\s+(\d)\s+\d+\s+\w+\s+[\/\w\d.]+\s+\d+MiB\s+\|', str_row)
         if match_obj is not None:
             used_gpus.append(int(match_obj.group(1)))
     logging.debug('used gpus:{}'.format(used_gpus))
