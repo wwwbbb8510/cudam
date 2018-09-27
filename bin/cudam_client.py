@@ -1,12 +1,17 @@
-from cudam.socket.client import GPUClient
 import logging
 import argparse
+import os
+
+from cudam.socket.client import GPUClient
 
 # pythonpath.bat C:\\code\\exercises\\COMP489 cudam/bin/cudam_client.py
 DEFAULT_COMMAND = 'run_code'
 
-DEFAULT_RUN_CODE_PATH = "cudam.bin.cudam_snap_gpu"
-DEFAULT_RUN_CODE_WORK_DIRECTORY = "C:\\code\\exercises\\COMP489"
+DEFAULT_RUN_CODE_PATH = "cudam.bin.cudam_run_code_dumb"
+if os.name == 'nt':
+    DEFAULT_RUN_CODE_WORK_DIRECTORY = "C:\\code\\exercises\\COMP489"
+else:
+    DEFAULT_RUN_CODE_WORK_DIRECTORY = "/home/wangbin/code/comp489"
 
 def main(args):
     _filter_args(args)
@@ -20,7 +25,7 @@ def main(args):
     g_client.connect()
     logging.debug('===Test command:{}==='.format(args.command))
     if args.command == 'run_code':
-        response = g_client.run(args.command, path=DEFAULT_RUN_CODE_PATH, work_directory=DEFAULT_RUN_CODE_WORK_DIRECTORY)
+        response = g_client.run(args.command, path=DEFAULT_RUN_CODE_PATH, work_directory=DEFAULT_RUN_CODE_WORK_DIRECTORY, use_cuda=False)
     else:
         response = g_client.run(args.command)
     print(response)
