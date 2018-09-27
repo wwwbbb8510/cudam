@@ -1,11 +1,14 @@
 import threading
 import socketserver
 import json
+import logging
+
 from .request import ServerRequest
 
 
 class GPUServer(object):
     def __init__(self, ip, port):
+        logging.debug('---Start server. IP:{}, port:{}---'.format(ip, port))
         self._ip = ip
         self._port = port
         self._server = GPUServerSocket((self.ip, self.port), GPUServerRequestHandler)
@@ -17,13 +20,14 @@ class GPUServer(object):
         # Exit the server thread when the main thread terminates
         server_thread.daemon = True
         server_thread.start()
-        print("Server loop running in thread:", server_thread.name)
+        logging.debug("---Server loop running in thread:{}---".format(server_thread.name))
         try:
             self.server.serve_forever()
         except KeyboardInterrupt:
             pass
 
     def stop(self):
+        logging.debug('---Stop server. IP:{}, port:{}---'.format(self.ip, self.port))
         self.server.shutdown()
         self.server.server_close()
         self._server = None
@@ -32,6 +36,7 @@ class GPUServer(object):
         if self.server is not None:
             self.server.shutdown()
             self.server.server_close()
+            logging.debug('---Stop server. IP:{}, port:{} in the __del__ function---'.format(self.ip, self.port))
 
     @property
     def ip(self):
@@ -54,18 +59,22 @@ class GPUServerRequestHandler(socketserver.BaseRequestHandler):
     _command_request = None
 
     def handle(self):
+        cur_thread = threading.current_thread()
         json_str = self.request.recv(1024)
+        logging.debug('---Thread:{} is handling the request---'.format(cur_thread.name))
         data = json.loads(json_str.decode())
+        logging.debug('---data received:{} ---'.format(str(data)))
         command = data['command']
         del (data['command'])
         response_data = getattr(self.command_request, command)(**data)
-        cur_thread = threading.current_thread()
         response_data['cur_thread'] = cur_thread.name
         response_str = json.dumps(response_data)
+        logging.debug('---data sent:{} ---'.format(response_str))
         self.request.sendall(response_str.encode())
 
     @property
     def command_request(self):
         if GPUServerRequestHandler._command_request is None:
+            logging.debug('---instantiate the server request---')
             GPUServerRequestHandler._command_request = ServerRequest()
         return GPUServerRequestHandler._command_request

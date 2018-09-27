@@ -1,15 +1,15 @@
 from cudam.socket.server import GPUServer
-import logging
 import argparse
+import logging
 
 
 # pythonpath.bat C:\\code\\exercises\\COMP489 cudam/bin/cudam_server.py
 def main(args):
     _filter_args(args)
     # configure logging
-    log_file_path = 'log/cudam_server' + args.server + '.log'
+    log_file_path = 'log/cudam_server_' + args.server + '.log'
     logging.basicConfig(filename=log_file_path, level=logging.DEBUG)
-    logging.info('===start server - server:%s===', args.server)
+    logging.debug('===start server. ID:{}, IP:{}, port:{}==='.format(args.server, args.ip, args.port))
 
     # start the server
     g_server = GPUServer(args.ip, args.port)
