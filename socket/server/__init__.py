@@ -7,6 +7,9 @@ from .request import ServerRequest
 
 
 class GPUServer(object):
+    # the dataset used by the server
+    _dataset = None
+
     def __init__(self, ip, port):
         logging.debug('---Start server. IP:{}, port:{}---'.format(ip, port))
         self._ip = ip
@@ -50,6 +53,19 @@ class GPUServer(object):
     def server(self):
         return self._server
 
+    @property
+    def dataset(self):
+        return GPUServer._dataset
+
+    @staticmethod
+    def get_dataset():
+        return GPUServer._dataset
+
+    @dataset.setter
+    def dataset(self, dataset):
+        GPUServer._dataset = dataset
+
+
 
 class GPUServerSocket(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
@@ -64,8 +80,11 @@ class GPUServerRequestHandler(socketserver.BaseRequestHandler):
         logging.debug('---Thread:{} is handling the request---'.format(cur_thread.name))
         data = json.loads(json_str.decode())
         logging.debug('---data received:{} ---'.format(str(data)))
+        # pop command from data
         command = data['command']
         del (data['command'])
+        # add server dataset into data
+        data['dataset'] = GPUServer.get_dataset()
         response_data = getattr(self.command_request, command)(**data)
         response_data['cur_thread'] = cur_thread.name
         response_str = json.dumps(response_data)

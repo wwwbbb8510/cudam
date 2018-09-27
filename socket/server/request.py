@@ -46,7 +46,7 @@ class ServerRequest(BaseRequest):
             sys.path.append(work_directory)
             exec("import " + path + " as run_code_module")
             module_obj = eval("run_code_module")
-            result = getattr(module_obj, entry)(args)
+            result = getattr(module_obj, entry)(**args)
             logging.debug('---run_code calling details---')
             logging.debug(
                 'path:{}, entry:{}, args:{}, work_directory:{}, use_cuda:{}'.format(path, entry, str(args),

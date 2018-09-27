@@ -20,7 +20,7 @@ def main(args):
     logging.basicConfig(filename=log_file_path, level=logging.DEBUG)
     logging.debug('===Start client. ID:{}, IP:{}, port==='.format(args.client, args.ip, args.port))
 
-    # start the server
+    # start the client
     g_client = GPUClient(args.ip, args.port)
     g_client.connect()
     logging.debug('===Test command:{}==='.format(args.command))
