@@ -42,7 +42,7 @@ class ServerRequest(BaseRequest):
 
         if is_device_ready:
             try:
-                if cuda_id is not None:
+                if cuda_id is not None and cuda_id is not False:
                     torch.cuda.set_device(cuda_id)
                     logging.debug('---cuda server is in use: {}---'.format(cuda_id))
                 torch.cuda.empty_cache()
@@ -61,9 +61,11 @@ class ServerRequest(BaseRequest):
                 }
             except:
                 pass
-            if cuda_id is not None and not self.cuda_queue.full():
+            if cuda_id is not None and cuda_id is not False and not self.cuda_queue.full():
                 self.cuda_queue.put(cuda_id)
                 logging.debug('---cuda server is added back in the queue: {}---'.format(cuda_id))
+            else:
+                logging.debug('---failed to add cuda server back in the queue: {}---'.format(cuda_id))
         else:
             dict_response = {
                 'result': None,
