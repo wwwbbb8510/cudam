@@ -40,23 +40,26 @@ class ServerRequest(BaseRequest):
             is_device_ready = True
 
         if is_device_ready:
-            if cuda_id is not None:
-                torch.cuda.set_device(cuda_id)
-            torch.cuda.empty_cache()
-            sys.path.append(work_directory)
-            exec("import " + path + " as run_code_module")
-            module_obj = eval("run_code_module")
-            result = getattr(module_obj, entry)(**args)
-            logging.debug('---run_code calling details---')
-            logging.debug(
-                'path:{}, entry:{}, args:{}, work_directory:{}, use_cuda:{}'.format(path, entry, str(args),
-                                                                                    work_directory, use_cuda))
-            dict_response = {
-                'result': result,
-                'error_code': 0,
-                'error_message': ''
-            }
-            if not self.cuda_queue.full():
+            try:
+                if cuda_id is not None:
+                    torch.cuda.set_device(cuda_id)
+                torch.cuda.empty_cache()
+                sys.path.append(work_directory)
+                exec("import " + path + " as run_code_module")
+                module_obj = eval("run_code_module")
+                result = getattr(module_obj, entry)(**args)
+                logging.debug('---run_code calling details---')
+                logging.debug(
+                    'path:{}, entry:{}, args:{}, work_directory:{}, use_cuda:{}'.format(path, entry, str(args),
+                                                                                        work_directory, use_cuda))
+                dict_response = {
+                    'result': result,
+                    'error_code': 0,
+                    'error_message': ''
+                }
+            except:
+                pass
+            if cuda_id is not None and not self.cuda_queue.full():
                 self.cuda_queue.put(cuda_id)
         else:
             dict_response = {
