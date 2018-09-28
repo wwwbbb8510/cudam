@@ -4,6 +4,7 @@ import json
 import logging
 
 from .request import ServerRequest
+from cudam.socket.comm import utils
 
 
 class GPUServer(object):
@@ -76,7 +77,7 @@ class GPUServerRequestHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         cur_thread = threading.current_thread()
-        json_str = self.request.recv(1024).decode()
+        json_str = utils.recvall(self.request).decode()
         logging.debug('---Thread:{} is handling the request---'.format(cur_thread.name))
         logging.debug('---data received:{} ---'.format(str(json_str)))
         data = json.loads(json_str) if len(json_str) > 0 else {}

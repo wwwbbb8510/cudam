@@ -2,6 +2,7 @@ import socket
 import json
 import logging
 
+from cudam.socket.comm import utils
 from .request import ClientRequest
 
 
@@ -28,7 +29,7 @@ class GPUClient(object):
         request_str = json.dumps(request_data)
         logging.debug('---data sent:{} ---'.format(request_str))
         self.socket.sendall(request_str.encode())
-        response_str = self.socket.recv(1024).decode()
+        response_str = utils.recvall(self.socket).decode()
         logging.debug('---data received:{} ---'.format(response_str))
         response_data = json.loads(response_str) if len(response_str) > 0 else {}
         return response_data
