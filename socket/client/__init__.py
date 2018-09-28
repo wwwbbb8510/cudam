@@ -28,10 +28,14 @@ class GPUClient(object):
         request_data['command'] = command
         request_str = json.dumps(request_data)
         logging.debug('---data sent:{} ---'.format(request_str))
-        self.socket.sendall(request_str.encode())
-        response_str = utils.recvall(self.socket).decode()
-        logging.debug('---data received:{} ---'.format(response_str))
-        response_data = json.loads(response_str) if len(response_str) > 0 else {}
+        try:
+            self.socket.sendall(request_str.encode())
+            response_str = utils.recvall(self.socket).decode()
+            logging.debug('---data received:{} ---'.format(response_str))
+            response_data = json.loads(response_str) if len(response_str) > 0 else {}
+        except:
+            logging.log('---run command failed---')
+            response_data = None
         return response_data
 
     def __del__(self):
