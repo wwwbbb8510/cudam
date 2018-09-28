@@ -78,8 +78,8 @@ class GPUServerRequestHandler(socketserver.BaseRequestHandler):
         cur_thread = threading.current_thread()
         json_str = self.request.recv(1024).decode()
         logging.debug('---Thread:{} is handling the request---'.format(cur_thread.name))
+        logging.debug('---data received:{} ---'.format(str(json_str)))
         data = json.loads(json_str) if len(json_str) > 0 else {}
-        logging.debug('---data received:{} ---'.format(str(data)))
         # pop command from data
         command = data['command']
         del (data['command'])
