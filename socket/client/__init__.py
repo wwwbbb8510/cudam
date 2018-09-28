@@ -34,7 +34,7 @@ class GPUClient(object):
             logging.debug('---data received:{} ---'.format(response_str))
             response_data = json.loads(response_str) if len(response_str) > 0 else {}
         except:
-            logging.log('---run command failed---')
+            logging.debug('---run command failed---')
             response_data = None
         return response_data
 
