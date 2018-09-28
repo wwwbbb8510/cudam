@@ -83,8 +83,11 @@ class GPUServerRequestHandler(socketserver.BaseRequestHandler):
         # pop command from data
         command = data['command']
         del (data['command'])
-        # add server dataset into data
-        data['dataset'] = GPUServer.get_dataset()
+        # add server dataset into data['args']
+        if command != 'ping':
+            if 'args' not in data.keys():
+                data['args'] = {}
+            data['args']['dataset'] = GPUServer.get_dataset()
         response_data = getattr(self.command_request, command)(**data)
         response_data['cur_thread'] = cur_thread.name
         response_str = json.dumps(response_data)
