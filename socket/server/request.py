@@ -34,6 +34,7 @@ class ServerRequest(BaseRequest):
         if use_cuda:
             if not self.cuda_queue.empty():
                 cuda_id = self.cuda_queue.get(False)
+                logging.debug('---cuda server is fetched from the queue: {}---'.format(cuda_id))
                 if cuda_id is not False:
                     is_device_ready = True
         else:
@@ -43,6 +44,7 @@ class ServerRequest(BaseRequest):
             try:
                 if cuda_id is not None:
                     torch.cuda.set_device(cuda_id)
+                    logging.debug('---cuda server is in use: {}---'.format(cuda_id))
                 torch.cuda.empty_cache()
                 sys.path.append(work_directory)
                 exec("import " + path + " as run_code_module")
@@ -61,6 +63,7 @@ class ServerRequest(BaseRequest):
                 pass
             if cuda_id is not None and not self.cuda_queue.full():
                 self.cuda_queue.put(cuda_id)
+                logging.debug('---cuda server is added back in the queue: {}---'.format(cuda_id))
         else:
             dict_response = {
                 'result': None,
