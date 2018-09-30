@@ -43,6 +43,7 @@ class ServerRequest(BaseRequest):
         if is_device_ready:
             try:
                 if cuda_id is not None and cuda_id is not False:
+                    logging.debug('---set cuda:{} as the current device---'.format(cuda_id))
                     torch.cuda.set_device(cuda_id)
                     logging.debug('---cuda server is in use: {}---'.format(cuda_id))
                 torch.cuda.empty_cache()
@@ -112,3 +113,7 @@ class ServerRequest(BaseRequest):
             ServerRequest._cuda_queue = queue.Queue(1)
             ServerRequest._cuda_queue.put(gpu_id)
             logging.debug('---cuda:{} is added in the queue---'.format(gpu_id))
+            if utils.ping_gpu(gpu_id):
+                logging.debug('---cuda:{} is occupied by the server---'.format(gpu_id))
+            else:
+                logging.debug('---failed to occupy cuda:{}---'.format(gpu_id))
