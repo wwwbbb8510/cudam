@@ -11,7 +11,7 @@ DEBUG = 0
 def main(args):
     _filter_args(args)
     # configure logging
-    log_file_path = 'log/cudam_server_' + args.server + '.log'
+    log_file_path = 'log/cudam_server_' + args.server + '_' + args.gpu_id + '.log'
     logging.basicConfig(filename=log_file_path, level=logging.DEBUG)
     logging.debug('===start server. ID:{}, IP:{}, port:{}==='.format(args.server, args.ip, args.port))
 
