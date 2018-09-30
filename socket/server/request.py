@@ -1,7 +1,7 @@
 import torch
 import queue
 import sys
-import logging
+import cudam.socket.comm.logging as logging
 
 from ..comm.message import BaseRequest
 from cudam.cuda.gpu import utils
@@ -60,7 +60,11 @@ class ServerRequest(BaseRequest):
                     'error_message': ''
                 }
             except:
-                pass
+                dict_response = {
+                    'result': None,
+                    'error_code': 2,
+                    'error_message': 'error occurred when running the code'
+                }
             if cuda_id is not None and cuda_id is not False and not self.cuda_queue.full():
                 self.cuda_queue.put(cuda_id)
                 logging.debug('---cuda server is added back in the queue: {}---'.format(cuda_id))
@@ -90,14 +94,21 @@ class ServerRequest(BaseRequest):
         return ServerRequest._cuda_queue
 
     @staticmethod
-    def _init_cuda_queue():
+    def _init_cuda_queue(gpu_id=None):
         logging.debug('---initialise the cuda queue---')
-        if torch.cuda.is_available() and torch.cuda.device_count() > 0:
-            ServerRequest._cuda_queue = queue.Queue(torch.cuda.device_count())
-            logging.debug('---{} cuda gpus are found---'.format(torch.cuda.device_count()))
-            for i in range(torch.cuda.device_count()):
-                if utils.ping_gpu(i):
-                    ServerRequest._cuda_queue.put(i)
-                    logging.debug('---cuda:{} is added in the queue---'.format(i))
+        # gpu_id is not specified
+        if gpu_id is None:
+            if torch.cuda.is_available() and torch.cuda.device_count() > 0:
+                ServerRequest._cuda_queue = queue.Queue(torch.cuda.device_count())
+                logging.debug('---{} cuda gpus are found---'.format(torch.cuda.device_count()))
+                for i in range(torch.cuda.device_count()):
+                    if utils.ping_gpu(i):
+                        ServerRequest._cuda_queue.put(i)
+                        logging.debug('---cuda:{} is added in the queue---'.format(i))
+            else:
+                ServerRequest._cuda_queue = queue.Queue(1)
+        # gpu id is specified
         else:
             ServerRequest._cuda_queue = queue.Queue(1)
+            ServerRequest._cuda_queue.put(gpu_id)
+            logging.debug('---cuda:{} is added in the queue---'.format(gpu_id))

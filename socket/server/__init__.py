@@ -1,7 +1,8 @@
 import threading
 import socketserver
 import json
-import logging
+import cudam.socket.comm.logging as logging
+import os
 
 from .request import ServerRequest
 from cudam.socket.comm import utils
@@ -11,11 +12,25 @@ class GPUServer(object):
     # the dataset used by the server
     _dataset = None
 
-    def __init__(self, ip, port):
+    def __init__(self, ip, port, gpu_id):
         logging.debug('---Start server. IP:{}, port:{}---'.format(ip, port))
         self._ip = ip
         self._port = port
+        self._gpu_id = gpu_id
+        # set available gpu
+        self._set_visible_gpu()
+        # create the socket server
         self._server = GPUServerSocket((self.ip, self.port), GPUServerRequestHandler)
+
+    def _set_visible_gpu(self):
+        """
+        set visible gpu id
+        :return:
+        """
+        if self.gpu_id >= 0:
+            os.environ['CUDA_VISIBLE_DEVICES'] = '{}'.format(self.gpu_id)
+            logging.debug('---Cuda {} is set visible---'.format(self.gpu_id))
+            ServerRequest._init_cuda_queue(self.gpu_id)
 
     def start(self):
         # Start a thread with the server -- that thread will then start one
@@ -49,6 +64,10 @@ class GPUServer(object):
     @property
     def port(self):
         return self._port
+
+    @property
+    def gpu_id(self):
+        return self._gpu_id
 
     @property
     def server(self):

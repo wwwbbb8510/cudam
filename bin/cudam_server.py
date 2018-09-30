@@ -19,7 +19,7 @@ def main(args):
     dataset = _load_dataset(args.dataset_name, args.partial_dataset_ratio, args.train_validation_split_point)
 
     # start the server
-    g_server = GPUServer(args.ip, args.port)
+    g_server = GPUServer(args.ip, args.port, args.gpu_id)
     g_server.dataset = dataset
     g_server.start()
 
@@ -33,6 +33,7 @@ def _filter_args(args):
     args.server = str(args.server) if args.server is not None else ''
     args.ip = str(args.ip) if args.ip is not None else 'localhost'
     args.port = int(args.port) if args.port is not None else 8000
+    args.gpu_id = int(args.gpu_id) if args.gpu_id is not None else 0
     args.dataset_name = str(args.dataset_name) if args.dataset_name is not None else 'cifar10'
     args.train_validation_split_point = int(
         args.train_validation_split_point) if args.train_validation_split_point is not None else 4000
@@ -55,6 +56,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--server', help='the server ID')
     parser.add_argument('-i', '--ip', help='host IP, default: localhost')
     parser.add_argument('-p', '--port', help='port, default: 8000')
+    parser.add_argument('-g', '--gpu_id', help='GPU ID, default: 0')
     parser.add_argument('--dataset_name',
                         help='dataset names:{}. Default: cifar10'.format(ImagesetLoader.dataset_classes().keys()))
     parser.add_argument('--train_validation_split_point', help='train validation split point, default: 4000')
