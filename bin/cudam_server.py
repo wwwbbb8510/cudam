@@ -8,10 +8,11 @@ DEBUG = 0
 
 
 # pythonpath.bat C:\\code\\exercises\\COMP489 cudam/bin/cudam_server.py
+# python cudam_server.py -s 4 -p 8000 -g 0
 def main(args):
     _filter_args(args)
     # configure logging
-    log_file_path = 'log/cudam_server_' + args.server + '_' + str(args.gpu_id) + '.log'
+    log_file_path = 'log/cudam_server_' + args.server + '_' + str(args.port) + '_' + str(args.gpu_id) + '.log'
     logging.basicConfig(filename=log_file_path, level=logging.DEBUG)
     logging.debug('===start server. ID:{}, IP:{}, port:{}==='.format(args.server, args.ip, args.port))
 
