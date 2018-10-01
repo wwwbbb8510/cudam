@@ -31,7 +31,6 @@ class GPUClientPool(object):
         :param arr_args:
         :return:
         """
-        start_index = 0
         batch_size = len(arr_args)
         batch_result = [None for i in range(batch_size)]
         incomplete_batch_keys = self._search_incomplete_batch_keys(batch_result)
@@ -111,6 +110,7 @@ class GPUClientPool(object):
     def _query_available_server_list(self):
         available_server_list = [key for key in self.server_availability.keys() if
                                  self.server_availability[key] is True]
+        return [('localhost', 8000)]
         return available_server_list
 
 
