@@ -110,7 +110,6 @@ class GPUClientPool(object):
     def _query_available_server_list(self):
         available_server_list = [key for key in self.server_availability.keys() if
                                  self.server_availability[key] is True]
-        return [('localhost', 8000)]
         return available_server_list
 
 
