@@ -9,7 +9,7 @@ class BaseRequest(object):
         """
         pass
 
-    def ping(self):
+    def ping(self, use_cuda=True):
         """
         ping command to check whether the gpu is available on the server
         :return: the availability of the cuda gpus

@@ -13,7 +13,7 @@ class ClientRequest(BaseRequest):
         """
         super(ClientRequest, self).__init__()
 
-    def ping(self):
+    def ping(self, use_cuda=True):
         logging.debug('---ping command called---')
         dict_request = {}
         return dict_request

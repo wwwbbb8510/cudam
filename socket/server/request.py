@@ -20,7 +20,7 @@ class ServerRequest(BaseRequest):
         """
         super(ServerRequest, self).__init__()
 
-    def ping(self):
+    def ping(self, use_cuda=True):
         logging.debug('---ping command called---')
         dict_response = {'availability': self.cuda_queue.qsize()}
         logging.debug('---ping command response---')

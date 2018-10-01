@@ -1,13 +1,137 @@
 import socket
 import json
 import logging
+from multiprocessing.pool import ThreadPool
 
 from cudam.socket.comm import utils
 from .request import ClientRequest
 
 
+class GPUClientPool(object):
+    """
+    gpu client pool
+    call server to run code in multi-thread mode in a pool
+    """
+    def __init__(self, server_list):
+        """
+        init gpu client pool
+        :param server_list: server list
+        :type server_list: list
+        """
+        self._server_list = server_list
+        self._server_availability = {}
+
+        # check server availability
+        self._check_server_availability()
+
+    def run_code_batch(self, arr_args):
+        """
+        run func
+        :param func:
+        :param arr_args:
+        :return:
+        """
+        start_index = 0
+        batch_size = len(arr_args)
+        batch_result = [None for i in range(batch_size)]
+        incomplete_batch_keys = self._search_incomplete_batch_keys(batch_result)
+        while len(incomplete_batch_keys) > 0:
+            # chunk the args
+            # recheck server availability
+            self._check_server_availability()
+            available_server_list = self._query_available_server_list()
+            len_available_servers = len(available_server_list)
+
+            # retrieve the batch args that need to be ran
+            run_keys = incomplete_batch_keys[0: len_available_servers]
+            arr_args_to_pass = [arr_args[i] for i in run_keys]
+
+            # attch the ip and port into the args
+            for i in range(len(arr_args_to_pass)):
+                arr_args_to_pass[i]['ip'], arr_args_to_pass[i]['port'] = available_server_list[i]
+
+            # create pool and run the code in the multi-thread pool
+            p = ThreadPool(len_available_servers)
+            run_result = p.map(GPUClientPool._run_code_func, arr_args_to_pass)
+            p.close()
+            p.join()
+
+            # update batch result using run result
+            self._update_batch_result(batch_result, run_result, run_keys)
+
+            # update incomplete batch keys
+            incomplete_batch_keys = self._search_incomplete_batch_keys(batch_result)
+
+        # filter all other information such as error_code apart from result
+        batch_response = [response['result'] for response in batch_result]
+
+        return batch_response
+
+    @staticmethod
+    def _search_incomplete_batch_keys(batch_result):
+        incomplete_keys = []
+        for i in range(len(batch_result)):
+            try:
+                if batch_result[i]['error_code'] == 0:
+                    continue
+            except:
+                pass
+            incomplete_keys.append(i)
+        return incomplete_keys
+
+    @staticmethod
+    def _update_batch_result(batch_result, run_result, run_keys):
+        for i in range(len(run_result)):
+            batch_result[run_keys[i]] = run_result[i]
+        return batch_result
+
+
+    @staticmethod
+    def _run_code_func(args):
+        ip = args.pop('ip')
+        port = args.pop('port')
+        g_client = GPUClient(ip, port)
+        g_client.connect()
+        response = g_client.run('run_code', **args)
+        g_client.close()
+        return response
+
+    def _check_server_availability(self):
+        for ip, port in self._server_list:
+            g_client = GPUClient(ip, port)
+            g_client.connect()
+            response = g_client.run('ping')
+            g_client.close()
+            if type(response) == dict and 'availability' in response.keys() and response['availability'] > 0:
+                self._server_availability[(ip, port)] = True
+            else:
+                self._server_availability[(ip, port)] = False
+        return self._server_availability
+
+    def _query_available_server_list(self):
+        available_server_list = [key for key in self.server_availability.keys() if
+                                 self.server_availability[key] is True]
+        return available_server_list
+
+
+    @property
+    def server_availability(self):
+        return self._server_availability
+
+
 class GPUClient(object):
+    """
+    gpu client
+    """
+
     def __init__(self, ip, port):
+        """
+        init gpu socket client
+        :param ip: server ip
+        :type ip: str
+        :param port: server port
+        :type port: int
+        """
         self._ip = ip
         self._port = port
         logging.debug('---Start client. IP:{}, port:{}---'.format(ip, port))
@@ -40,7 +164,8 @@ class GPUClient(object):
 
     def __del__(self):
         if self.socket is not None:
-            logging.debug('---Close the socket connection in the __del__ function. IP:{}, port:{}---'.format(self.ip, self.port))
+            logging.debug(
+                '---Close the socket connection in the __del__ function. IP:{}, port:{}---'.format(self.ip, self.port))
             self.close()
 
     @property
