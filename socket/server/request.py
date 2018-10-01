@@ -114,7 +114,7 @@ class ServerRequest(BaseRequest):
             # after set env CUDA_VISIBLE_DEVICES, the ordinal starts from 0 regardless of the cuda ID
             ServerRequest._cuda_queue.put(0)
             logging.debug('---cuda:{} is added in the queue---'.format(gpu_id))
-            if utils.ping_gpu(gpu_id):
+            if utils.ping_gpu(0):
                 logging.debug('---cuda:{} is occupied by the server---'.format(gpu_id))
             else:
                 logging.debug('---failed to occupy cuda:{}---'.format(gpu_id))
