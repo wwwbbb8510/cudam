@@ -8,7 +8,11 @@ DEBUG = 0
 
 
 # pythonpath.bat C:\\code\\exercises\\COMP489 cudam/bin/cudam_server.py
-# python cudam_server.py -s 4 -p 8000 -g 0
+# nohup python cudam_server.py -s 4 -i cuda4.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_4_8000_0.log &
+# nohup python cudam_server.py -s 4 -i cuda4.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_4_8001_1.log &
+# nohup python cudam_server.py -s 5 -i cuda5.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_5_8000_0.log &
+# nohup python cudam_server.py -s 5 -i cuda5.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_5_8001_1.log &
+# nohup python cudam_server.py -s 5 -i cuda5.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_5_8002_2.log &
 def main(args):
     _filter_args(args)
     # configure logging
