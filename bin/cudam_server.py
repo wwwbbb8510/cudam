@@ -48,6 +48,7 @@ def _filter_args(args):
 def _load_dataset(dataset_name, partial_dataset_ratio, train_validation_split_point):
     # load dataset
     mode = 0 if DEBUG == 1 else None
+    train_validation_split_point = 800 if DEBUG else train_validation_split_point
     dataset = ImagesetLoader.load(dataset_name,
                                   train_validation_split_point=train_validation_split_point,
                                   partial_dataset_ratio=partial_dataset_ratio,
