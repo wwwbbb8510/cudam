@@ -1,6 +1,7 @@
 import socket
 import json
 import logging
+import numpy as np
 from multiprocessing.pool import ThreadPool
 
 from cudam.socket.comm import utils
@@ -65,6 +66,13 @@ class GPUClientPool(object):
         batch_response = [response['result'] for response in batch_result]
 
         return batch_response
+
+    @staticmethod
+    def load_server_list_from_file(file):
+        loaded_list = np.loadtxt(file, dtype=np.string_, delimiter=',')
+        server_list = [(str(server[0].decode()), int(server[1].decode())) for server in loaded_list]
+        return server_list
+
 
     @staticmethod
     def _search_incomplete_batch_keys(batch_result):
