@@ -8,11 +8,23 @@ DEBUG = 0
 
 
 # pythonpath.bat C:\\code\\exercises\\COMP489 cudam/bin/cudam_server.py
+# nohup python cudam_server.py -s 1 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda1.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_1_8000_0.log &
+# nohup python cudam_server.py -s 1 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda1.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_1_8001_1.log &
+# nohup python cudam_server.py -s 2 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda2.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_2_8000_0.log &
+# nohup python cudam_server.py -s 2 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda2.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_2_8001_1.log &
+# nohup python cudam_server.py -s 3 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda3.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_3_8000_0.log &
+# nohup python cudam_server.py -s 3 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda3.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_3_8001_1.log &
 # nohup python cudam_server.py -s 4 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda4.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_4_8000_0.log &
 # nohup python cudam_server.py -s 4 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda4.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_4_8001_1.log &
 # nohup python cudam_server.py -s 5 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda5.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_5_8000_0.log &
 # nohup python cudam_server.py -s 5 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda5.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_5_8001_1.log &
 # nohup python cudam_server.py -s 5 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda5.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_5_8002_2.log &
+# nohup python cudam_server.py -s 6 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda6.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_6_8000_0.log &
+# nohup python cudam_server.py -s 6 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda6.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_6_8001_1.log &
+# nohup python cudam_server.py -s 6 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda6.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_6_8002_2.log &
+# nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_11_8000_0.log &
+# nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_11_8001_1.log &
+# nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_11_8002_2.log &
 def main(args):
     _filter_args(args)
     # configure logging
