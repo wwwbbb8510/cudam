@@ -105,13 +105,16 @@ class GPUClientPool(object):
 
     def _check_server_availability(self):
         for ip, port in self._server_list:
-            g_client = GPUClient(ip, port)
-            g_client.connect()
-            response = g_client.run('ping')
-            g_client.close()
-            if type(response) == dict and 'availability' in response.keys() and response['availability'] > 0:
-                self._server_availability[(ip, port)] = True
-            else:
+            try:
+                g_client = GPUClient(ip, port)
+                g_client.connect()
+                response = g_client.run('ping')
+                g_client.close()
+                if type(response) == dict and 'availability' in response.keys() and response['availability'] > 0:
+                    self._server_availability[(ip, port)] = True
+                else:
+                    self._server_availability[(ip, port)] = False
+            except:
                 self._server_availability[(ip, port)] = False
         return self._server_availability
 
