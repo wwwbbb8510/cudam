@@ -40,6 +40,8 @@ class GPUClientPool(object):
             # recheck server availability
             self._check_server_availability()
             available_server_list = self._query_available_server_list()
+            logging.debug('---The available server list in the batch run---')
+            logging.debug('server list: {}'.format(str(available_server_list)))
             len_available_servers = len(available_server_list)
 
             # retrieve the batch args that need to be ran
@@ -57,6 +59,8 @@ class GPUClientPool(object):
             p.join()
 
             # update batch result using run result
+            logging.debug('---Run result from the thread pool---')
+            logging.debug('run result: {}'.format(str(run_result)))
             self._update_batch_result(batch_result, run_result, run_keys)
 
             # update incomplete batch keys
@@ -81,8 +85,12 @@ class GPUClientPool(object):
             try:
                 if batch_result[i]['error_code'] == 0:
                     continue
+                else:
+                    logging.debug('---Error occurs on cuda server--')
+                    logging.debug('response details: {}'.format(str(batch_result[i])))
             except:
-                pass
+                logging.debug('---Exception occurs when passing response from cuda server--')
+                logging.debug('response details: {}'.format(str(batch_result[i])))
             incomplete_keys.append(i)
         return incomplete_keys
 
