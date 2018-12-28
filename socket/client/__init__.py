@@ -85,13 +85,11 @@ class GPUClientPool(object):
             try:
                 if batch_result[i]['error_code'] == 0:
                     continue
-                else:
-                    logging.debug('---Error occurs on cuda server--')
-                    logging.debug('response details: {}'.format(str(batch_result[i])))
             except:
-                logging.debug('---Exception occurs when passing response from cuda server--')
-                logging.debug('response details: {}'.format(str(batch_result[i])))
+                pass
             incomplete_keys.append(i)
+        logging.debug('---incomplete keys in the current batch---')
+        logging.debug('incomplete keys: {}'.format(str(incomplete_keys)))
         return incomplete_keys
 
     @staticmethod
