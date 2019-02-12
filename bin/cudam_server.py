@@ -1,7 +1,7 @@
 import argparse
 import logging
 
-from cudam.socket.server import GPUServer
+from cudam.cudam_socket.server import GPUServer
 from bidcap.utils.loader import ImagesetLoader
 
 DEBUG = 0

@@ -1,7 +1,7 @@
 import torch
 import queue
 import sys
-import cudam.socket.comm.logging as logging
+import cudam.cudam_socket.comm.logging as logging
 
 from ..comm.message import BaseRequest
 from cudam.cuda.gpu import utils

@@ -70,7 +70,7 @@ if __name__ == '__main__':
 ### run the client side python code to evaluate a batch of models
 
 ```bash
-# start the socket server on cuda1 by listening port 8000 and running on GPU card 0
+cudam_socket
 nohup python cudam_server.py -s 1 -i cuda1 -p 8000 -g 0 >& log/nohup_cuda_1_8000_0.log &
 ```
 

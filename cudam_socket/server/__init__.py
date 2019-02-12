@@ -1,11 +1,11 @@
 import threading
 import socketserver
 import json
-import cudam.socket.comm.logging as logging
+import cudam.cudam_socket.comm.logging as logging
 import os
 
 from .request import ServerRequest
-from cudam.socket.comm import utils
+from cudam.cudam_socket.comm import utils
 
 
 class GPUServer(object):
@@ -19,7 +19,7 @@ class GPUServer(object):
         self._gpu_id = gpu_id
         # set available gpu
         self._set_visible_gpu()
-        # create the socket server
+        # create the cudam_socket server
         self._server = GPUServerSocket((self.ip, self.port), GPUServerRequestHandler)
 
     def _set_visible_gpu(self):

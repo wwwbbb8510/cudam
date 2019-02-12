@@ -4,7 +4,7 @@ import logging
 import numpy as np
 from multiprocessing.pool import ThreadPool
 
-from cudam.socket.comm import utils
+from cudam.cudam_socket.comm import utils
 from .request import ClientRequest
 
 
@@ -142,7 +142,7 @@ class GPUClient(object):
 
     def __init__(self, ip, port):
         """
-        init gpu socket client
+        init gpu cudam_socket client
         :param ip: server ip
         :type ip: str
         :param port: server port
@@ -159,7 +159,7 @@ class GPUClient(object):
         self.socket.connect((self.ip, self.port))
 
     def close(self):
-        logging.debug('---Close the socket connection. IP:{}, port:{}---'.format(self.ip, self.port))
+        logging.debug('---Close the cudam_socket connection. IP:{}, port:{}---'.format(self.ip, self.port))
         self.socket.close()
         self._socket = None
 
@@ -181,7 +181,7 @@ class GPUClient(object):
     def __del__(self):
         if self.socket is not None:
             logging.debug(
-                '---Close the socket connection in the __del__ function. IP:{}, port:{}---'.format(self.ip, self.port))
+                '---Close the cudam_socket connection in the __del__ function. IP:{}, port:{}---'.format(self.ip, self.port))
             self.close()
 
     @property

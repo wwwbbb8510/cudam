@@ -2,7 +2,7 @@ import logging
 import argparse
 import os
 
-from cudam.socket.client import GPUClient
+from cudam.cudam_socket.client import GPUClient
 
 # pythonpath.bat C:\\code\\exercises\\COMP489 cudam/bin/cudam_client.py
 DEFAULT_COMMAND = 'run_code'
