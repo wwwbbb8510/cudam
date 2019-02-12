@@ -6,7 +6,7 @@ with open(os.path.join('cudam', "README.md"), "r") as fh:
 
 setuptools.setup(
     name="cudam",
-    version="0.0.4",
+    version="0.0.5",
     author="Bin Wang",
     author_email="wwwbbb8510@gmail.com",
     description="Cuda Mangement - multi-process, scheduled jobs, distributed processing",
@@ -16,7 +16,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     scripts=[
         'cudam/bin/cudam_snap_gpu.py',
-        'cudam/bin/cudam_task_manager.py'
+        'cudam/bin/cudam_task_manager.py',
+        'cudam/bin/cudam_server.py',
     ],
     classifiers=(
         "Programming Language :: Python :: 3",
