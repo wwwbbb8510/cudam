@@ -6,7 +6,7 @@ with open(os.path.join('cudam', "README.md"), "r") as fh:
 
 setuptools.setup(
     name="cudam",
-    version="0.0.5",
+    version="0.0.6",
     author="Bin Wang",
     author_email="wwwbbb8510@gmail.com",
     description="Cuda Mangement - multi-process, scheduled jobs, distributed processing",

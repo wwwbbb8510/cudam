@@ -35,7 +35,7 @@ cuda5,8002
 * The client code that concurrently evaluates models
 
 ```python
-from cudam.socket.client import GPUClientPool
+from cudam.cudam_socket.client import GPUClientPool
 DEFAULT_RUN_CODE_WORK_DIRECTORY = "/home/www/server" # the folder where the server side code resides 
 DEFAULT_RUN_CODE_PATH = "server_file" # the file name of the server side code
 SERVER_LIST_CONFIG = 'config/server_list.txt' # the configuration file of the server list
@@ -67,14 +67,11 @@ if __name__ == '__main__':
 
 * After installation of this package, `cudam_server.py` should be automatically copied to the bin path; if not, please manually copy this file to the root folder of the project. The server can be started by running the following command:  
 
-### run the client side python code to evaluate a batch of models
-
 ```bash
-cudam_socket
 nohup python cudam_server.py -s 1 -i cuda1 -p 8000 -g 0 >& log/nohup_cuda_1_8000_0.log &
 ```
 
-
+### run the client side python code to evaluate a batch of models
 
 ## task manager
 
