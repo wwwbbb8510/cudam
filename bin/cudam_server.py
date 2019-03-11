@@ -1,5 +1,8 @@
 import argparse
 import logging
+from torchvision import transforms
+import torchvision
+import torch
 
 from cudam.cudam_socket.server import GPUServer
 from bidcap.utils.loader import ImagesetLoader
@@ -8,23 +11,23 @@ DEBUG = 0
 
 
 # pythonpath.bat C:\\code\\exercises\\COMP489 cudam/bin/cudam_server.py
-# nohup python cudam_server.py -s 1 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda1.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_1_8000_0.log &
-# nohup python cudam_server.py -s 1 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda1.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_1_8001_1.log &
-# nohup python cudam_server.py -s 2 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda2.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_2_8000_0.log &
-# nohup python cudam_server.py -s 2 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda2.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_2_8001_1.log &
-# nohup python cudam_server.py -s 3 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda3.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_3_8000_0.log &
-# nohup python cudam_server.py -s 3 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda3.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_3_8001_1.log &
-# nohup python cudam_server.py -s 4 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda4.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_4_8000_0.log &
-# nohup python cudam_server.py -s 4 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda4.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_4_8001_1.log &
-# nohup python cudam_server.py -s 5 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda5.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_5_8000_0.log &
-# nohup python cudam_server.py -s 5 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda5.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_5_8001_1.log &
-# nohup python cudam_server.py -s 5 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda5.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_5_8002_2.log &
-# nohup python cudam_server.py -s 6 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda6.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_6_8000_0.log &
-# nohup python cudam_server.py -s 6 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda6.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_6_8001_1.log &
-# nohup python cudam_server.py -s 6 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda6.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_6_8002_2.log &
-# nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_11_8000_0.log &
-# nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_11_8001_1.log &
-# nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_11_8002_2.log &
+# nohup python cudam_server.py -s 1 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda1.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_1_8000_0.log &
+# nohup python cudam_server.py -s 1 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda1.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_1_8001_1.log &
+# nohup python cudam_server.py -s 2 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda2.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_2_8000_0.log &
+# nohup python cudam_server.py -s 2 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda2.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_2_8001_1.log &
+# nohup python cudam_server.py -s 3 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda3.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_3_8000_0.log &
+# nohup python cudam_server.py -s 3 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda3.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_3_8001_1.log &
+# nohup python cudam_server.py -s 4 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda4.sms.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_4_8000_0.log &
+# nohup python cudam_server.py -s 4 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda4.sms.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_4_8001_1.log &
+# nohup python cudam_server.py -s 5 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda5.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_5_8000_0.log &
+# nohup python cudam_server.py -s 5 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda5.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_5_8001_1.log &
+# nohup python cudam_server.py -s 5 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda5.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_5_8002_2.log &
+# nohup python cudam_server.py -s 6 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda6.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_6_8000_0.log &
+# nohup python cudam_server.py -s 6 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda6.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_6_8001_1.log &
+# nohup python cudam_server.py -s 6 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda6.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_6_8002_2.log &
+# nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_11_8000_0.log &
+# nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_11_8001_1.log &
+# nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_11_8002_2.log &
 def main(args):
     _filter_args(args)
     # configure logging
@@ -55,17 +58,49 @@ def _filter_args(args):
     args.train_validation_split_point = int(
         args.train_validation_split_point) if args.train_validation_split_point is not None else 4000
     args.partial_dataset_ratio = float(args.partial_dataset_ratio) if args.partial_dataset_ratio is not None else 0.1
+    args.torch_vision_dataset = int(args.torch_vision_dataset) if args.torch_vision_dataset is not None else 0
+    args.is_aug = int(args.is_aug) if args.is_aug is not None else 0
 
 
-def _load_dataset(dataset_name, partial_dataset_ratio, train_validation_split_point):
+def _load_dataset(dataset_name, partial_dataset_ratio, train_validation_split_point, torch_vision_dataset, is_aug):
     # load dataset
     mode = 0 if DEBUG == 1 else None
     train_validation_split_point = 800 if DEBUG else train_validation_split_point
-    dataset = ImagesetLoader.load(dataset_name,
+    if torch_vision_dataset == 1 and dataset_name == 'cifar10':
+        dataset = _torch_vision_load_cifar10(is_aug)
+    else:
+        dataset = ImagesetLoader.load(dataset_name,
                                   train_validation_split_point=train_validation_split_point,
                                   partial_dataset_ratio=partial_dataset_ratio,
                                   mode=mode)
     return dataset
+
+
+def _torch_vision_load_cifar10(is_aug):
+    torch_cifar10_root = 'datasets'
+    if is_aug == 1:
+        logging.debug('---use data augmentation---')
+        train_transform_cifar10 = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ])
+    else:
+        logging.debug('---do not use data augmentation---')
+        train_transform_cifar10 = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ])
+    test_transform_cifar10 = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    ])
+    train_dataset = torchvision.datasets.CIFAR10(root=torch_cifar10_root, train=True, transform=train_transform_cifar10)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
+    test_dataset = torchvision.datasets.CIFAR10(root=torch_cifar10_root, train=False, transform=test_transform_cifar10)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False)
+    return (train_loader, test_loader)
 
 
 # main entrance
@@ -79,5 +114,7 @@ if __name__ == '__main__':
                         help='dataset names:{}. Default: cifar10'.format(ImagesetLoader.dataset_classes().keys()))
     parser.add_argument('--train_validation_split_point', help='train validation split point, default: 4000')
     parser.add_argument('--partial_dataset_ratio', help='partial dataset ratio, default: 0.1')
+    parser.add_argument('--torch_vision_dataset', help='load dataset by torch vision, default: 0')
+    parser.add_argument('--is_aug', help='whether to use data augmentation, default: 0')
     args = parser.parse_args()
     main(args)
