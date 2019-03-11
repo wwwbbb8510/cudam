@@ -5,7 +5,7 @@ import torchvision
 import torch
 
 from cudam.cudam_socket.server import GPUServer
-from bidcap.utils.loader import ImagesetLoader
+from bidcap.utils.loader import ImagesetLoader, torch_vision_load_cifar10
 
 DEBUG = 0
 
@@ -67,41 +67,13 @@ def _load_dataset(dataset_name, partial_dataset_ratio, train_validation_split_po
     mode = 0 if DEBUG == 1 else None
     train_validation_split_point = 800 if DEBUG else train_validation_split_point
     if torch_vision_dataset == 1 and dataset_name == 'cifar10':
-        dataset = _torch_vision_load_cifar10(is_aug)
+        dataset = torch_vision_load_cifar10(is_aug)
     else:
         dataset = ImagesetLoader.load(dataset_name,
                                   train_validation_split_point=train_validation_split_point,
                                   partial_dataset_ratio=partial_dataset_ratio,
                                   mode=mode)
     return dataset
-
-
-def _torch_vision_load_cifar10(is_aug):
-    torch_cifar10_root = 'datasets'
-    if is_aug == 1:
-        logging.debug('---use data augmentation---')
-        train_transform_cifar10 = transforms.Compose([
-            transforms.RandomCrop(32, padding=4),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-        ])
-    else:
-        logging.debug('---do not use data augmentation---')
-        train_transform_cifar10 = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-        ])
-    test_transform_cifar10 = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-    ])
-    train_dataset = torchvision.datasets.CIFAR10(root=torch_cifar10_root, train=True, transform=train_transform_cifar10)
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
-    test_dataset = torchvision.datasets.CIFAR10(root=torch_cifar10_root, train=False, transform=test_transform_cifar10)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=100, shuffle=False)
-    return (train_loader, test_loader)
-
 
 # main entrance
 if __name__ == '__main__':
