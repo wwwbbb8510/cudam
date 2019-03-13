@@ -74,6 +74,7 @@ class GPUClientPool(object):
     @staticmethod
     def load_server_list_from_file(file):
         loaded_list = np.loadtxt(file, dtype=np.string_, delimiter=',')
+        if len(loaded_list.shape) == 1: loaded_list = [loaded_list]
         server_list = [(str(server[0].decode()), int(server[1].decode())) for server in loaded_list]
         return server_list
 

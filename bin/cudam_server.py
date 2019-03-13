@@ -36,7 +36,7 @@ def main(args):
     logging.debug('===start server. ID:{}, IP:{}, port:{}==='.format(args.server, args.ip, args.port))
 
     # load dataset
-    dataset = _load_dataset(args.dataset_name, args.partial_dataset_ratio, args.train_validation_split_point)
+    dataset = _load_dataset(args.dataset_name, args.partial_dataset_ratio, args.train_validation_split_point, args.torch_vision_dataset, args.is_aug)
 
     # start the server
     g_server = GPUServer(args.ip, args.port, args.gpu_id)
@@ -58,8 +58,8 @@ def _filter_args(args):
     args.train_validation_split_point = int(
         args.train_validation_split_point) if args.train_validation_split_point is not None else 4000
     args.partial_dataset_ratio = float(args.partial_dataset_ratio) if args.partial_dataset_ratio is not None else 0.1
-    args.torch_vision_dataset = int(args.torch_vision_dataset) if args.torch_vision_dataset is not None else 0
-    args.is_aug = int(args.is_aug) if args.is_aug is not None else 0
+    args.torch_vision_dataset = int(args.torch_vision_dataset) if args.torch_vision_dataset is not None else 1
+    args.is_aug = int(args.is_aug) if args.is_aug is not None else 1
 
 
 def _load_dataset(dataset_name, partial_dataset_ratio, train_validation_split_point, torch_vision_dataset, is_aug):
@@ -86,7 +86,7 @@ if __name__ == '__main__':
                         help='dataset names:{}. Default: cifar10'.format(ImagesetLoader.dataset_classes().keys()))
     parser.add_argument('--train_validation_split_point', help='train validation split point, default: 4000')
     parser.add_argument('--partial_dataset_ratio', help='partial dataset ratio, default: 0.1')
-    parser.add_argument('--torch_vision_dataset', help='load dataset by torch vision, default: 0')
-    parser.add_argument('--is_aug', help='whether to use data augmentation, default: 0')
+    parser.add_argument('--torch_vision_dataset', help='load dataset by torch vision, default: 1')
+    parser.add_argument('--is_aug', help='whether to use data augmentation, default: 1')
     args = parser.parse_args()
     main(args)

@@ -18,7 +18,7 @@ class GPUServer(object):
         self._port = port
         self._gpu_id = gpu_id
         # set available gpu
-        self._set_visible_gpu()
+        if gpu_id is not None: self._set_visible_gpu()
         # create the cudam_socket server
         self._server = GPUServerSocket((self.ip, self.port), GPUServerRequestHandler)
 

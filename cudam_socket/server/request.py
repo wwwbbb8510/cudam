@@ -44,7 +44,7 @@ class ServerRequest(BaseRequest):
             try:
                 if cuda_id is not None and cuda_id is not False:
                     logging.debug('---set cuda:{} as the current device---'.format(cuda_id))
-                    torch.cuda.set_device(cuda_id)
+                    if torch.cuda.is_available(): torch.cuda.set_device(cuda_id)
                     logging.debug('---cuda server is in use: {}---'.format(cuda_id))
                 torch.cuda.empty_cache()
                 sys.path.append(work_directory)
@@ -108,13 +108,17 @@ class ServerRequest(BaseRequest):
                         logging.debug('---cuda:{} is added in the queue---'.format(i))
             else:
                 ServerRequest._cuda_queue = queue.Queue(1)
+                ServerRequest._cuda_queue.put(10)
         # gpu id is specified
         else:
             ServerRequest._cuda_queue = queue.Queue(1)
             # after set env CUDA_VISIBLE_DEVICES, the ordinal starts from 0 regardless of the cuda ID
-            ServerRequest._cuda_queue.put(0)
-            logging.debug('---cuda:{} is added in the queue---'.format(gpu_id))
-            if utils.ping_gpu(0):
-                logging.debug('---cuda:{} is occupied by the server---'.format(gpu_id))
+            if torch.cuda.is_available():
+                ServerRequest._cuda_queue.put(0)
+                logging.debug('---cuda:{} is added in the queue---'.format(gpu_id))
+                if utils.ping_gpu(0):
+                    logging.debug('---cuda:{} is occupied by the server---'.format(gpu_id))
+                else:
+                    logging.debug('---failed to occupy cuda:{}---'.format(gpu_id))
             else:
-                logging.debug('---failed to occupy cuda:{}---'.format(gpu_id))
+                ServerRequest._cuda_queue.put(10)
