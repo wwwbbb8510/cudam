@@ -4,6 +4,7 @@ import logging
 
 from cudam.cuda.gpu import utils as gu
 
+# nohup python cudam_sp_gpu.py -s 1 -l 300 -g 0 &
 
 def main(args):
     _filter_args(args)
@@ -14,7 +15,7 @@ def main(args):
 
     # snap gpu resource
     if args.gpu is not None:
-        gu.snap_gpu(args.gpu, args.interval)
+        gu.snap_gpu(args.gpu, args.lock_time)
 
 
 def _filter_args(args):
