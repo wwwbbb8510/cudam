@@ -9,6 +9,20 @@ date >> cuda_status.txt && echo 'cuda1' >> cuda_status.txt && ssh cuda1 'nvidia-
 
 ## server-client mode to utilize multi-GPUs across Multi-Machines
 
+### the details of the infrastrucutre are described in the following paper
+
+* Here is the paper: [Evolving Deep Neural Networks by Multi-objective Particle Swarm Optimization for Image Classification](https://arxiv.org/abs/1904.09035). Any readers are very welcomed, and any citations are highly appreciated. 
+```
+@misc{wang2019evolving,
+    title={Evolving Deep Neural Networks by Multi-objective Particle Swarm Optimization for Image Classification},
+    author={Bin Wang and Yanan Sun and Bing Xue and Mengjie Zhang},
+    year={2019},
+    eprint={1904.09035},
+    archivePrefix={arXiv},
+    primaryClass={cs.NE}
+}
+```
+
 ### server side - develop the code that runs on a single GPU
 
 ```python
