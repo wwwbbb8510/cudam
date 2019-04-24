@@ -3,7 +3,10 @@ import argparse
 import logging
 
 from cudam.cuda.gpu import utils as gu
+import time
+import os
 
+# nohup python cudam_sp_gpu.py -s 1 -l 300 -i 60 -g 0 &
 
 def main(args):
     _filter_args(args)
@@ -13,8 +16,11 @@ def main(args):
     logging.info('===Snap gpu - server:%s, gpu:%d===', args.server, args.gpu)
 
     # snap gpu resource
-    if args.gpu is not None:
-        gu.snap_gpu(args.gpu, args.interval)
+    while True:
+        if args.gpu is not None:
+            os.environ['CUDA_VISIBLE_DEVICES'] = '{}'.format(args.gpu)
+            gu.snap_gpu(args.gpu, args.lock_time)
+            time.sleep(args.interval)
 
 
 def _filter_args(args):
@@ -26,6 +32,7 @@ def _filter_args(args):
     args.server = str(args.server) if args.server is not None else None
     args.lock_time = int(args.lock_time) if args.lock_time is not None else None
     args.gpu = int(args.gpu) if args.gpu is not None else None
+    args.interval = int(args.interval) if args.interval is not None else 30
 
 
 # main entrance
@@ -34,5 +41,6 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--server', help='server id where the script will be running')
     parser.add_argument('-l', '--lock_time', help='available GPU lock time')
     parser.add_argument('-g', '--gpu', help='gpu ID')
+    parser.add_argument('-i', '--interval', help='interval')
     args = parser.parse_args()
     main(args)
