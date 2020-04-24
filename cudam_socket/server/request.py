@@ -1,6 +1,7 @@
 import torch
 import queue
 import sys
+import importlib as imp
 import cudam.cudam_socket.comm.logging as logging
 
 from ..comm.message import BaseRequest
@@ -50,6 +51,7 @@ class ServerRequest(BaseRequest):
                 sys.path.append(work_directory)
                 exec("import " + path + " as run_code_module")
                 module_obj = eval("run_code_module")
+                imp.reload(module_obj)
                 result = getattr(module_obj, entry)(**args)
                 logging.debug('---run_code calling details---')
                 logging.debug(
