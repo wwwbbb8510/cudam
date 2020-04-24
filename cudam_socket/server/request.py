@@ -63,7 +63,7 @@ class ServerRequest(BaseRequest):
                     'error_message': ''
                 }
             except:
-                e = sys.exc_info()[0]
+                e = sys.exc_info()
                 logging.debug('---Server error info: {}---'.format(e))
                 dict_response = {
                     'result': None,
