@@ -61,6 +61,8 @@ class ServerRequest(BaseRequest):
                     'error_message': ''
                 }
             except:
+                e = sys.exc_info()[0]
+                logging.debug('---Server error info: {}---'.format(e))
                 dict_response = {
                     'result': None,
                     'error_code': 2,
