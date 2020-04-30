@@ -31,6 +31,9 @@ DEBUG = 0
 # nohup python cudam_server.py -s 8 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda8.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_8_8000_0.log &
 # nohup python cudam_server.py -s 8 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda8.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_8_8001_1.log &
 # nohup python cudam_server.py -s 8 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda8.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_8_8002_2.log &
+# nohup python cudam_server.py -s 9 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda9.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_9_8000_0.log &
+# nohup python cudam_server.py -s 9 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda9.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_9_8001_1.log &
+# nohup python cudam_server.py -s 9 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda9.ecs.vuw.ac.nz -p 8002 -g 2 >& log/nohup_cudam_server_9_8002_2.log &
 # nohup python cudam_server.py -s 10 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda10.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_10_8000_0.log &
 # nohup python cudam_server.py -s 10 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda10.ecs.vuw.ac.nz -p 8001 -g 1 >& log/nohup_cudam_server_10_8001_1.log &
 # nohup python cudam_server.py -s 11 --partial_dataset_ratio=1 --torch_vision_dataset=1 --is_aug=1 --train_validation_split_point=40000 -i cuda11.ecs.vuw.ac.nz -p 8000 -g 0 >& log/nohup_cudam_server_11_8000_0.log &
